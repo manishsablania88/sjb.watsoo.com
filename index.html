@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DJB Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 800px;
+      /* Increased to accommodate the table */
+      padding: 20px;
+    }
+
+    /* Mobile responsive card adjustments */
+    @media screen and (max-width: 768px) {
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        display: block;
+        /* Change from flex to block */
+        padding: 0;
+      }
+
+      .card {
+        width: 100%;
+        min-height: 100vh;
+        max-width: none;
+        padding: 15px;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        box-sizing: border-box;
+      }
+
+      .title {
+        font-size: 18px;
+      }
+
+      .logo {
+        width: 150px;
+      }
+    }
+
+    .header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      width: 100%;
+    }
+
+    /* For desktop we keep the original layout */
+    .mobile-info-row {
+      display: none;
+      /* Hidden on desktop */
+    }
+
+    .header-left {
+      text-align: left;
+      font-size: 12px;
+      color: #555;
+      width: 20%;
+    }
+
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 60%;
+    }
+
+    .header-right {
+      text-align: right;
+      font-size: 12px;
+      color: #555;
+      width: 20%;
+    }
+
+    /* Mobile responsiveness for header */
+    @media screen and (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* On mobile, we only show the center part in the header */
+      .header-center {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      /* Hide original left and right on mobile */
+      .header .header-left,
+      .header .header-right {
+        display: none;
+      }
+
+      /* Show the mobile info row on mobile */
+      .mobile-info-row {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+
+      .mobile-info-row .header-left {
+        width: 50%;
+        text-align: left;
+      }
+
+      .mobile-info-row .header-right {
+        width: 50%;
+        text-align: right;
+      }
+    }
+
+    .header-left .value,
+    .header-right .value {
+      white-space: nowrap;
+      font-size: 14px;
+      /* Making it slightly smaller to fit better */
+    }
+
+    /* Additional styles for mobile header values */
+    @media screen and (max-width: 768px) {
+      .header-left .label,
+      .header-right .label {
+        font-size: 11px;
+      }
+
+      .header-left .value,
+      .header-right .value {
+        font-size: 12px;
+      }
+    }
+
+    /* Extra small screens */
+    @media screen and (max-width: 375px) {
+      .header-left .label,
+      .header-right .label {
+        font-size: 10px;
+      }
+
+      .header-left .value,
+      .header-right .value {
+        font-size: 11px;
+      }
+    }
+
+    .logo {
+      width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+      color: #003366;
+    }
+
+    .stat-blocks {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      gap: 15px;
+    }
+
+    .stat-block {
+      background-color: #f0f7ff;
+      border-radius: 6px;
+      padding: 15px;
+      flex: 1;
+      text-align: center;
+      border-left: 4px solid #1976d2;
+    }
+
+    /* Mobile responsiveness for stat blocks - keeping horizontal layout */
+    @media screen and (max-width: 768px) {
+      .stat-blocks {
+        flex-direction: row;
+        /* Keep horizontal layout */
+        flex-wrap: nowrap;
+        /* Prevent wrapping */
+        gap: 3px;
+        /* Even smaller gap on mobile */
+      }
+
+      .stat-block {
+        padding: 6px 3px;
+        /* Smaller padding for better fit */
+        font-size: 0.85em;
+        /* Smaller font */
+      }
+
+      .stat-value {
+        font-size: 11px;
+        /* Making font even smaller */
+        margin-bottom: 2px;
+        /* Reduce margin */
+        font-weight: normal;
+        /* Reduce emphasis for better fit */
+        white-space: nowrap;
+        /* Critical - ensure no wrapping */
+      }
+
+      .stat-label {
+        font-size: 10px;
+        /* Even smaller label font */
+      }
+    }
+
+    /* Extra small devices */
+    @media screen and (max-width: 375px) {
+      .stat-blocks {
+        gap: 2px;
+      }
+
+      .stat-block {
+        padding: 4px 2px;
+      }
+
+      .stat-value {
+        font-size: 10px;
+        /* Even smaller for very small screens */
+        margin-bottom: 1px;
+        letter-spacing: -0.3px;
+        /* Tighten letter spacing */
+      }
+
+      .stat-label {
+        font-size: 8px;
+      }
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1976d2;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      /* Keep all values on single line */
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #555;
+      white-space: nowrap;
+      /* Keep labels on single line */
+    }
+
+    .info-item {
+      margin-bottom: 15px;
+    }
+
+    .label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .value {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .error {
+      color: #d32f2f;
+      text-align: center;
+    }
+
+    /* Table styles */
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      /* Smooth scrolling on iOS */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      min-width: 650px;
+      /* Ensures table doesn't get too compressed */
+    }
+
+    th {
+      background-color: #1976d2;
+      color: white;
+      font-weight: bold;
+      text-align: left;
+      padding: 8px;
+    }
+
+    /* Mobile responsive table indicator */
+    @media screen and (max-width: 768px) {
+      .table-container:before {
+        content: "← Scroll horizontally →";
+        display: block;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        padding: 5px 0;
+      }
+    }
+
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #e3f2fd;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 0 10px 0;
+      color: #003366;
+    }
+
+    td.date-cell {
+      white-space: nowrap;
+    }
+
+    /* Recalculation cell styling */
+    .recalculation-cell {
+      color: #d32f2f;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .recalculation-cell:hover {
+      background-color: rgba(255, 0, 0, 0.3);
+    }
+
+    /* Highlight entire row for recalculated entries */
+    .recalculated-row {
+      background-color: rgba(255, 0, 0, 0.1) !important;
+      transition: background-color 0.2s;
+    }
+
+    .recalculated-row:hover {
+      background-color: rgba(255, 0, 0, 0.15) !important;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #003366;
+    }
+
+    .close-modal {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-modal:hover {
+      color: #555;
+    }
+
+    .modal-table-container {
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    /* Evidence link style */
+    .evidence-link {
+      color: #1976d2;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="report-card">
+    <div class="loading">Loading report data...</div>
+  </div>
+
+  <div id="recalculationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Recalculation History</div>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="modal-table-container">
+        <table id="recalculationTable">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Vehicle Number</th>
+              <th>From Date</th>
+              <th>To Date</th>
+              <th>Regenerated By</th>
+              <th>Regeneration Time</th>
+              <th>Reason</th>
+              <th>Remarks</th>
+              </tr>
+          </thead>
+          <tbody id="recalculationTableBody">
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const reportCard = document.getElementById('report-card');
+      const modal = document.getElementById('recalculationModal');
+      const closeModal = document.querySelector('.close-modal');
+
+      // Close modal when clicking on x
+      closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+
+      // Close modal when clicking outside of it
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+
+      // --- MODIFICATION ---
+      // This function now shows sample data instead of fetching from a URL
+      window.showRecalculationHistory = function(cell) {
+        const vehicleNumber = cell.getAttribute('data-vehicle-number');
+        
+        // Sample data for the modal
+        const sampleRecalculationData = [{
+          vehicleNumber: vehicleNumber,
+          fromDate: "2025-10-25T00:00:00.000Z",
+          toDate: "2025-10-26T00:00:00.000Z",
+          reCalculatedBy: "Supervisor-1",
+          regenerateTime: "2025-10-26T10:00:00.000Z",
+          reason: "Initial data incorrect",
+          reasonToRecalculate: "GPS outage reported by driver"
+        },
+        {
+          vehicleNumber: vehicleNumber,
+          fromDate: "2025-10-25T00:00:00.000Z",
+          toDate: "2025-10-26T00:00:00.000Z",
+          reCalculatedBy: "Admin",
+          regenerateTime: "2025-10-26T12:30:00.000Z",
+          reason: "Review",
+          reasonToRecalculate: "Verifying driver log"
+        }
+      ];
+
+        const tableBody = document.getElementById('recalculationTableBody');
+        tableBody.innerHTML = '';
+
+        sampleRecalculationData.forEach((item, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.vehicleNumber || '-'}</td>
+            <td class="date-cell">${formatDate(item.fromDate)}</td>
+            <td class="date-cell">${formatDate(item.toDate)}</td>
+            <td>${item.reCalculatedBy || '-'}</td>
+            <td>${item.regenerateTime ? new Date(item.regenerateTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
+            <td>${item.reason || '-'}</td>
+            <td>${item.reasonToRecalculate || '-'}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // Show the modal
+        document.getElementById('recalculationModal').style.display = 'block';
+      };
+
+      // --- MODIFICATION ---
+      // This section no longer checks for a QR code in the URL.
+      // const urlParams = new URLSearchParams(window.location.search);
+      // const qrCode = urlParams.get('code');
+      //
+      // if (!qrCode) {
+      //   reportCard.innerHTML = '<div class="error">Invalid QR code</div>';
+      //   return;
+      // }
+      
+      // --- MODIFICATION ---
+      // We now load this sample data immediately instead of fetching from a URL.
+      const sampleReportData = {
+        "generationTime": "2025-10-26T14:30:00.000Z",
+        "generatedBy": "AdminUser",
+        "uniqueId": "Report_123",
+        "totalTrips": 5,
+        "totalVehicleReports": 2,
+        "totalDistance": 123.45,
+        "fromDate": "2025-10-25T00:00:00.000Z",
+        "toDate": "2025-10-26T00:00:00.000Z",
+        "vehicleReports": [ {
+          "area": "South Zone",
+          "vehicleNumber": "DL1CD5678",
+          "tankerType": "Sewer Cleaner",
+          "totalDistance": 63.25,
+          "totalTrips": 2,
+          "vehicleRecalculateCount": 0 // Set to 0 to show "N/A"
+        }]
+      };
+      
+      // Render the report using the sample data
+      // We wrap this in a short timeout to simulate a "loading" effect
+      setTimeout(() => {
+        renderReportCard(sampleReportData);
+      }, 500); // 0.5 second delay
+      
+
+      function formatDate(dateString) {
+        if (!dateString) return '-';
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+        } catch (e) {
+          return dateString;
+        }
+      }
+
+      function formatDateWithTime(dateString) {
+        if (!dateString) return '-';
+        try {
+          const date = new Date(dateString);
+          // For mobile screens, we'll create a more compact format
+          if (window.innerWidth <= 768) {
+            return date.toLocaleString('en-IN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+              timeZone: 'Asia/Kolkata'
+            }).replace(',', ' '); // Replace comma with space to be more compact
+          } else {
+            return date.toLocaleString('en-IN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+              timeZone: 'Asia/Kolkata'
+            });
+          }
+        } catch (e) {
+          return dateString;
+        }
+      }
+
+      // Function to handle clicking on recalculation cell is defined globally
+
+      function renderReportCard(data) {
+        let tableHtml = '';
+
+        // Check if vehicle reports are available
+        if (data.vehicleReports && data.vehicleReports.length > 0) {
+          tableHtml = `
+      <div class="section-title">Vehicle Report Details</div>
+      <div class="stat-blocks">
+        <div class="stat-block">
+          <div class="stat-value">${data.totalTrips || 0}</div>
+          <div class="stat-label">Total Trips</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">${data.totalVehicleReports || 0}</div>
+          <div class="stat-label">Total Vehicles</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">${parseFloat(data.totalDistance || 0).toFixed(2)}km</div>
+          <div class="stat-label">Total Distance</div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Area</th>
+              <th>Vehicle No.</th>
+              <th>Tanker Type</th>
+              <th>Report Date</th>
+              <th>Trip Distance / Engine Hr</th>
+              <th>Trip Count</th>
+              <th>Re-Calculation Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.vehicleReports.map((vehicle, index) => `
+              <tr class="${vehicle.vehicleRecalculateCount > 0 ? 'recalculated-row' : ''}">
+                <td>${index + 1}</td>
+                <td>${vehicle.area || '-'}</td>
+                <td>${vehicle.vehicleNumber || '-'}</td>
+                <td>${vehicle.tankerType || '-'}</td>
+                <td class="date-cell">${formatDate(data.fromDate)} - ${formatDate(data.toDate)}</td>
+                <td>${parseFloat(vehicle.totalDistance || 0).toFixed(2)} km</td>
+                <td>${vehicle.totalTrips || 0}</td>
+                <td   class="${vehicle.vehicleRecalculateCount > 0 ? 'recalculation-cell' : ''}"
+   data-vehicle-number="${vehicle.vehicleNumber || ''}"
+   data-from-date="${data.fromDate ? new Date(data.fromDate).getTime() : ''}"
+   data-to-date="${data.toDate ? new Date(data.toDate).getTime() : ''}"
+   onclick="${vehicle.vehicleRecalculateCount > 0 ? 'showRecalculationHistory(this)' : ''}"
+  style="text-align: center; vertical-align: middle;">
+  ${vehicle.vehicleRecalculateCount || "N/A"}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+        }
+
+        reportCard.innerHTML = `
+    <div class="header">
+      <div class="header-left">
+        <div class="label">Generation Time</div>
+        <div class="value">${formatDateWithTime(data.generationTime) || '-'}</div>
+      </div>
+      <div class="header-center">
+        <img src="/djb1.png" alt="DJB Logo" class="logo">
+        <h1 class="title">Delhi Jal Board Distance Report</h1>
+      </div>
+      <div class="header-right">
+        <div class="label">Generated By</div>
+        <div class="value">${data.generatedBy || data.uniqueId?.split('_')[0] || '-'}</div>
+      </div>
+    </div>
+    <div class="mobile-info-row">
+      <div class="header-left">
+        <div class="label">Generation Time</div>
+        <div class="value">${formatDateWithTime(data.generationTime) || '-'}</div>
+      </div>
+      <div class="header-right">
+        <div class="label">Generated By</div>
+        <div class="value">${data.generatedBy || data.uniqueId?.split('_')[0] || '-'}</div>
+      </div>
+    </div>
+    ${tableHtml}
+    <div class="footer">
+      This report is system-generated by DJB Management System
+    </div>
+  `;
+      }
+    });
+  </script>
+</body>
+</html>
